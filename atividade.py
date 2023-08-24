@@ -1,14 +1,21 @@
-## CRIANDO UMA CLASSE PARA GERENCIAMENTO ACADEMICO CRIANDO UM DICIONARIO PRIVADO PARA RECEBER AS INFORMAÇOES
+# criando a classe princial que contém um dicionario para guardar as informações que serão inseridas futuramente.
+
 class GerenciadorAcademico: 
     def __init__(self):
         self.__controle = {'dados': []}
         
-##GETTER DO DICIONARIO
+# Getter no dicionário
+
     @property 
     def controle (self):
         return self.__controle
     
- ## CRIANDO UM METODO PARA INSERIR INFORMAÇÃO 
+# Mensagem Padrão    
+
+    def mensagem(self):
+        print('Seja bem vindo(a) ao Sitema para Gerenciar a área Acadêmica !!')
+    
+ # Metodo para inserir informações
     
     def Inserir_Informacao_Gerenciador(self,id,nome,data_nasc,cpf,historico,media,disciplinas_curso,horarios_aula,frequencia,status):
         
@@ -25,7 +32,9 @@ class GerenciadorAcademico:
             "status": status
         }
             self.__controle['dados'].append(valores)
- ## COMANDO PARA ATUALIZAR AS INFORMAÇOES JÁ INSERIDA
+            
+# Caso seja necessário esse trecho de código atualizará alguma informação ja inserida anteriormente.
+
         else: 
          self.__controle['dados'].append(
              {"id": id,
@@ -39,8 +48,10 @@ class GerenciadorAcademico:
             "frequencia": frequencia,
             "status": status
         }
+         
          )
-##VERIFICANDO INFORMAÇÕES CADASTRADAS NO SISTEMA
+# Metodo que lista as informações cadastradas
+
     def Listar_Informacoes(self):
         if self.__controle['dados']:
             print('Consta no nosso sistema os seguintes dados:')
@@ -49,56 +60,149 @@ class GerenciadorAcademico:
         else:
           print('Até o momento o sistema segue sem nenhum registro! ')
         
-## APAGANDO ALGUMA INFORMAÇÃO
+# Metodo para apagar uma informação
             
-    def apaga_(self,id):
+    def Deletar_Informacao(self,id):
         del self.__controle['dados'][id]
         
-##CRIANDO A CLASSE ALUNO HERDANDO AS ESPECIFICAÇÕES DE GERENCIADOR ACADEMICO
+# Classe que herdará todas as especificações de GerenciadorAcademico
 
 class Aluno(GerenciadorAcademico):
     def __init__(self,RA):
         super().__init__()
         self.__RA = RA
+
+# Getter no Registro de Aluno
     @property
     def RA(self):
         return self.__RA
+    
     def mensagem(self):
         pass
+# Método que verifica quais são os as especificações permitidas em Nivel Superior
 
-##CRIANDO A CLASSE NIVEL SUPERIOR HERDANDO AS ESPECIFICAÇÕES DE ALUNO   
+    def Verificar_Informacoes(self, argumentos):
+        permitidos = {'pos','graduacao'}
+        if argumentos not in permitidos:
+            return "[ATENÇÃO] Nível Acadêmico nao permidido ser inserido."
+        return "Nível Superior inserido com sucesso."
+    
+
+# Classe que herdará as especificações da classe aluno
+   
 class NivelSuperior(Aluno):
     def __init__(self, RA,nivel_formacao):
         super().__init__(RA)
         self.__nivel_formacao = nivel_formacao
+        
+# Getter em Nivel de Formação
+
     @property
     def nivel_formacao(self):
         return self.__nivel_formacao
-    def mensagem(self):
-        pass
-
-
+    
+# Classe que herdará as especificações da classe GerenciadorAcademico
+       
+class Professor(GerenciadorAcademico):
+    def __init__(self,matricula,salario,percentual):
+        super().__init__()
+        self.__matricula = matricula
+        self.salario = salario
+        self.percentual = percentual
         
-# controle = GerenciadorAcademico()
-# controle.Inserir_Informacao_Gerenciador(1,'Maria Julia','2000-02-09','000.000.000-00','xx','xx','Python - Nivelamento','18:00:00','xx','Ativo(a)')
-# controle.Inserir_Informacao_Gerenciador(2,'Victor Gabriel','1980-08-01','111.111.111-11','xx','xx','Python - Nivelamento','18:00:00','xx','Ativo(a)')
-# controle.Inserir_Informacao_Gerenciador(3,'Pedro Henerique','1999-01-01','222.222.222-22','xx','xx','Python - Nivelamento','18:00:00','xx','Ativo(a)')
-# controle.Listar_Informacoes()
+#Getter em matricula
+        
+    @property
+    def matricula(self):
+        return self.__matricula
+    
+# Setter em matricula para permitir que ele aceite somente valores e seu tamanho unico de 5 caracteres
+    
+    @matricula.setter
+    def matricula(self,num):
+        if num.isnumeric() and len(num) == 5:
+            self.__matricula = num
+            print('A Senha fornecida está correta. ')  
+        else:
+            print('Verifique a senha e tente novamente.')
+            
+     
+        
+# Metodo que verifica o reajuste salarial
+    
+    def Reajuste_Salarial(self):
+        self.__salario = self.__salario +(self.__salario * (self.__percentual / 100))
+        print(f' Seu salario com um aumento de {self.__percentual} % esta no valor de R$ {self.__salario}')
+        
+#Getter percetual de reajuste    
+
+    @property
+    def percentual(self):
+        return self.__percentual
+
+# Setter para configurar o valor que for inserido em percentual
+ 
+    @percentual.setter
+    def percentual(self,tipo):
+        if isinstance(tipo, str):
+            tipo = float(tipo.replace('%', ''))
+            
+        self.__percentual = tipo
+            
+# Getter em salário
+
+    @property
+    def salario(self):
+        return self.__salario
+    
+# Setter para configurar o valor que for inserido em salario
+    
+    @salario.setter
+    def salario(self,valor):
+        if isinstance(valor, str):
+            valor = float(valor.replace('R$', ''))
+            
+        self.__salario = valor
+        
+# Classe que herdará as especificações da classe professor
+    
+class Ocupacao(Professor):
+     def __init__(self,matricula,salario,percentual,ocupacao):
+         super().__init__(matricula,salario,percentual)
+         self.__ocupacao = ocupacao
+
+# Getter em ocupacao
+
+     @property
+     def ocupacao(self):
+         return self.__ocupacao
+
+#  Método que verifica quais são os as especificações permitidas em ocupação.
+# Incluso um casting para como ele escrever o valor permitido, o programa transforme em minusculo para a validação.
+     
+     def Verificar_Ocupacao(self, nome):
+         valor = {'efetivo','temporario'}
+         nome = nome.lower()
+         if nome not in valor:
+             print("[ATENÇÃO] Ocupação nao permidida ser inserida.") 
+         else:
+             print("Ocupacao inserida com sucesso.")
+    
+
+controle = GerenciadorAcademico()
+
+
+   
+
+professor = Professor('',1500.00,10)
+professor.matricula = '1'
 
 
 
-# Criando uma instância da classe Aluno e inserindo informações
-aluno = Aluno('123')
-aluno.Inserir_Informacao_Gerenciador(4, 'SARAH FERNANDA', '2001-10-12', '333.333.333-33', 'xx', 'xx', 'Python - Nivelamento', '18:00:00', 'xx', 'Ativo(a)')
 
-# Criando uma instância da classe NivelSuperior e inserindo informações
-aluno_nivel_superior = NivelSuperior('456','Graduação')
-aluno_nivel_superior.Inserir_Informacao_Gerenciador(5, 'AMANDA CARLA', '1992-03-25', '444.444.444-44', 'xx', 'xx', 'Python - Nivelamento', '18:00:00', 'xx', 'Ativo(a)')
 
-# Listando informações do aluno e aluno de nível superior
-aluno.Listar_Informacoes()
-print(f'Minha matricula ativa é {aluno.RA}')
 
-aluno_nivel_superior.Listar_Informacoes()
-print(f'Minha matricula é {aluno_nivel_superior.RA}')
-print(f'Meu nivel superior atualmente é {aluno_nivel_superior.nivel_formacao}')
+
+
+
+
